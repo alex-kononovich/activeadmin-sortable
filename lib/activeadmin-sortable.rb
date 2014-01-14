@@ -7,7 +7,7 @@ module ActiveAdmin
     module ControllerActions
       def sortable
         member_action :sort, :method => :post do
-          if defined?(::Mongoid::Orderable) && 
+          if defined?(::Mongoid::Orderable) &&
             resource.class.included_modules.include?(::Mongoid::Orderable)
               resource.move_to! params[:position].to_i
           else
@@ -24,7 +24,7 @@ module ActiveAdmin
       def sortable_handle_column
         column '', :class => "activeadmin-sortable" do |resource|
           sort_url = resource_path(resource) + "/sort"
-          content_tag :span, HANDLE, :class => 'handle', 'data-sort-url' => sort_url
+          content_tag :span, HANDLE, :class => 'handle', 'data-sort-url' => sort_url, 'data-position' => resource.send(resource.position_column)
         end
       end
     end
