@@ -24,7 +24,15 @@ module ActiveAdmin
       def sortable_handle_column
         column '', :class => "activeadmin-sortable" do |resource|
           sort_url = resource_path(resource) + "/sort"
-          content_tag :span, HANDLE, :class => 'handle', 'data-sort-url' => sort_url, 'data-position' => resource.send(resource.position_column)
+
+          if defined?(::Mongoid::Orderable) &&
+            resource.class.included_modules.include?(::Mongoid::Orderable)
+              position_column = resource.orderable_column
+          else
+            position_column = resource.position_column
+          end
+
+          content_tag :span, HANDLE, :class => 'handle', 'data-sort-url' => sort_url, 'data-position' => resource.send(position_column)
         end
       end
     end
