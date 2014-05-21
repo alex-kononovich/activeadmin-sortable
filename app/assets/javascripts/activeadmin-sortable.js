@@ -1,5 +1,4 @@
 //= require jquery.ui.sortable
-//= require jquery.blockUI
 
 (function($) {
   $(document).ready(function() {
@@ -25,12 +24,16 @@
           target_position = prev_position;
         }
 
-        container.block();
         $.ajax({
           url: url,
           type: 'post',
           data: { position: target_position },
-          success: function() { container.unblock(); }
+          success: function() {
+            // repaint table
+            container.find('tr').removeClass('odd').removeClass('even');
+            container.find('tr:odd').addClass('even');
+            container.find('tr:even').addClass('odd');
+          }
         });
       }
     });
