@@ -33,6 +33,12 @@
             container.find('tr').removeClass('odd').removeClass('even');
             container.find('tr:odd').addClass('even');
             container.find('tr:even').addClass('odd');
+
+            // update positions
+            container.find('tr .handle').each(function(element) {
+              element = $(element);
+              element.data('position', element.index());
+            });
           }
         });
       }
