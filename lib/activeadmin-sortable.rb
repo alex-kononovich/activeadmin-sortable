@@ -5,7 +5,27 @@ require 'rails/engine'
 module ActiveAdmin
   module Sortable
     module ControllerActions
-      def sortable
+      def sortable(scope = nil)
+
+        if scope
+          filter scope
+
+          sidebar :sorting, only: :index do
+            "To sort #{resource_class.to_s.pluralize.downcase}, filter by #{scope} fist &#x2191;".html_safe 
+          end
+
+          controller do
+            # dirty, dirty hack
+            resource_class.class_variable_set :@@search_scope, scope
+
+            helper_method :scope_active?
+            def scope_active? name
+              search_params = clean_search_params params[:q]
+              search_params.keys.include?("#{name}_id_eq")
+            end
+          end
+        end
+
         member_action :sort, :method => :post do
           if defined?(::Mongoid::Orderable) &&
             resource.class.included_modules.include?(::Mongoid::Orderable)
@@ -22,6 +42,9 @@ module ActiveAdmin
       HANDLE = '&#x2195;'.html_safe
 
       def sortable_handle_column
+        scope = resource_class.class_variable_get :@@search_scope
+        return if scope and not scope_active?(scope)
+
         column '', :class => "activeadmin-sortable" do |resource|
           sort_url = resource_path(resource) + "/sort"
 
