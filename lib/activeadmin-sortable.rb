@@ -7,6 +7,8 @@ module ActiveAdmin
     module ControllerActions
       def sortable(scope = nil)
 
+        config.sort_order = "position_asc"
+
         if scope
           filter scope
 
