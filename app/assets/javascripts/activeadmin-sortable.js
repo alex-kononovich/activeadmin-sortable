@@ -1,9 +1,13 @@
+//= require jquery.ui.sortable
+//= require jquery.blockUI
+
 (function($) {
   $(document).ready(function() {
     $('.handle').closest('tbody').activeAdminSortable();
   });
 
   $.fn.activeAdminSortable = function() {
+    var container = this;
     this.sortable({
       update: function(event, ui) {
         var url = ui.item.find('[data-sort-url]').data('sort-url');
@@ -21,11 +25,12 @@
           target_position = prev_position;
         }
 
+        container.block();
         $.ajax({
           url: url,
           type: 'post',
           data: { position: target_position },
-          success: function() { window.location.reload() }
+          success: function() { container.unblock(); }
         });
       }
     });

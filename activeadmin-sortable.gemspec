@@ -18,4 +18,5 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency 'activeadmin', '>= 0.4'
+  gem.add_dependency 'blockuijs-rails', :github => 'rusanu/blockuijs-rails'
 end
