@@ -22,8 +22,12 @@ module ActiveAdmin
 
             helper_method :scope_active?
             def scope_active? name
-              search_params = clean_search_params params[:q]
-              search_params.keys.include?("#{name}_id_eq")
+              unless params["#{name}_id"].nil?
+                true
+              else
+                search_params = clean_search_params params[:q]
+                search_params.keys.include?("#{name}_id_eq")
+              end
             end
           end
         end
@@ -44,8 +48,10 @@ module ActiveAdmin
       HANDLE = '&#x2195;'.html_safe
 
       def sortable_handle_column
-        scope = resource_class.class_variable_get :@@search_scope
-        return if scope and not scope_active?(scope)
+        if resource_class.class_variable_defined? :@@search_scope
+          scope = resource_class.class_variable_get :@@search_scope
+          return if scope and not scope_active?(scope)
+        end
 
         column '', :class => "activeadmin-sortable" do |resource|
           sort_url = resource_path(resource) + "/sort"
